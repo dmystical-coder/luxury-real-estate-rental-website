@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shopping List App</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div id="shopping-list">
+      <div class="header">
+        <h1>{{header || 'Welcome'}}</h1>
+        <button @click="isEditing(true)" v-if="!editing">Add Item</button>
+        <button @click="isEditing(false)" v-else>Cancel</button>
+      </div>
+
+      <div v-if="editing" class="add-item-form">
+        <input
+          @keyup.enter="newItem ? addNewItem : console.log(0)"
+          v-model="newItem"
+          type="text"
+          placeholder="Add an Item"
+        />
+        <button :disabled="newItem.length === 0" @click="addNewItem">
+          Click Me!
+        </button>
+        <ul>
+          <li
+            v-for="{id, label, bought, priority} in items"
+            :key="id"
+            :class="{strikethrough: bought, priority: priority}"
+          >
+            {{label}}
+          </li>
+        </ul>
+      </div>
+
+      <p v-else>Nice job! You have bought all your items.</p>
+    </div>
+
+    <script src="https://unpkg.com/vue@3"></script>
+    <script>
+      const shoppingListApp = Vue.createApp({
+        data() {
+          return {
+            header: "Shopping List App",
+            newItem: "",
+            editing: false,
+            items: [
+              { id: 1, label: "10 party hats", bought: true },
+              { id: 2, label: "2 board games" },
+              { id: 3, label: "20 cups", priority: true },
+            ],
+          };
+        },
+
+        methods: {
+          addNewItem() {
+            modifiedNewItem = {
+              id: this.items.length + 1,
+              label: `${this.newItem}`,
+            };
+            this.items.push(modifiedNewItem);
+            this.newItem = "";
+          },
+          isEditing(editing) {
+            this.editing = editing;
+            this.newItem = "";
+          },
+        },
+      }).mount("#shopping-list");
+    </script>
+  </body>
+</html>
